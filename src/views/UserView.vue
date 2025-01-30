@@ -3,6 +3,18 @@ import { ref } from 'vue'
 
 const createPopUp = ref(false);
 const updatePopUp = ref(false);
+
+const nome = ref('');
+const email = ref('');
+const senha = ref('');
+const confirmarSenha = ref('');
+const search = ref('');
+const cargo = ref('');
+
+const onSubmit = () => {
+  console.log('submit');
+  createPopUp.value = false;
+}
 </script>
 
 <template>
@@ -20,39 +32,38 @@ const updatePopUp = ref(false);
 
         <v-card prepend-icon="mdi-account" title="CRIAR">
           <v-card-text>
-            <v-row dense>
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field label="Nome*" required></v-text-field>
-              </v-col>
+            <v-form novalidate @submit.prevent="onSubmit">
+              <v-row dense>
+                <v-col cols="12" md="12" sm="6">
+                  <v-text-field label="Nome*" v-model="nome" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" md="12" sm="6">
-                <v-text-field label="Email*" required></v-text-field>
-              </v-col>
+                <v-col cols="12" md="12" sm="6">
+                  <v-text-field label="Email*" v-model="email" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" md="6" sm="6">
-                <v-text-field label="Senha*" type="password" required></v-text-field>
-              </v-col>
+                <v-col cols="12" md="6" sm="6">
+                  <v-text-field label="Senha*" v-model="senha" type="password" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" md="6" sm="6">
-                <v-text-field label="Confirmar Senha*" type="password" required></v-text-field>
-              </v-col>
+                <v-col cols="12" md="6" sm="6">
+                  <v-text-field label="Confirmar Senha*" v-model="confirmarSenha" type="password" required></v-text-field>
+                </v-col>
 
-              <v-col cols="12" sm="12">
-                <v-select :items="['Admin', 'Editor']" label="Cargo*" required></v-select>
-              </v-col>
-            </v-row>
-
-            <small class="text-caption text-medium-emphasis">*indicates required field</small>
+                <v-col cols="12" sm="12">
+                  <v-select :items="['Admin', 'Editor']" v-model="cargo" label="Cargo*" required></v-select>
+                </v-col>
+              </v-row>
+              <small class="text-caption text-medium-emphasis">*indicates required field</small>
+            </v-form>
           </v-card-text>
 
           <v-divider></v-divider>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-
             <v-btn text="Close" variant="plain" @click="createPopUp = false"></v-btn>
-
-            <v-btn color="primary" text="Save" variant="tonal" @click="createPopUp = false"></v-btn>
+            <v-btn color="primary" text="Save" variant="tonal" @click="onSubmit"></v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -80,7 +91,7 @@ const updatePopUp = ref(false);
           <td>Ruan</td>
           <td>ruanhigor123@gmail.com</td>
           <td class="text-center">
-            <v-chip variant="outlined"> Chip </v-chip>
+            <v-chip variant="outlined"> Admin </v-chip>
           </td>
           <td class="text-center">
             <v-dialog v-model="updatePopUp" max-width="600">
