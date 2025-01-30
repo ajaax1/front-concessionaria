@@ -1,18 +1,29 @@
 <script setup lang="ts">
+import { useForm } from 'vee-validate';
 import { ref } from 'vue'
+import * as yup from 'yup';
 
 const createPopUp = ref(false);
 const updatePopUp = ref(false);
 
 const nome = ref('');
-const email = ref('');
 const senha = ref('');
 const confirmarSenha = ref('');
 const search = ref('');
 const cargo = ref('');
 
+
+const schema = yup.object({
+  email: yup.string().required().email(),
+});
+
+const { values, errors, defineField } = useForm({
+  validationSchema: schema,
+});
+
+const [email, emailAttrs] = defineField('email');
+
 const onSubmit = () => {
-  console.log('submit');
   createPopUp.value = false;
 }
 </script>
@@ -32,15 +43,16 @@ const onSubmit = () => {
 
         <v-card prepend-icon="mdi-account" title="CRIAR">
           <v-card-text>
-            <v-form novalidate @submit.prevent="onSubmit">
+            <Form novalidate @submit.prevent="onSubmit">
               <v-row dense>
                 <v-col cols="12" md="12" sm="6">
                   <v-text-field label="Nome*" v-model="nome" required></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12" sm="6">
-                  <v-text-field label="Email*" v-model="email" required></v-text-field>
+                  <v-text-field label="Email*" v-model="email" v-bind="emailAttrs" required></v-text-field>
                 </v-col>
+                <pre>errors: {{ errors }}</pre>
 
                 <v-col cols="12" md="6" sm="6">
                   <v-text-field label="Senha*" v-model="senha" type="password" required></v-text-field>
@@ -55,7 +67,7 @@ const onSubmit = () => {
                 </v-col>
               </v-row>
               <small class="text-caption text-medium-emphasis">*indicates required field</small>
-            </v-form>
+            </Form>
           </v-card-text>
 
           <v-divider></v-divider>
