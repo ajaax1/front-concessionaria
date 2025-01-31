@@ -5,27 +5,30 @@ import * as yup from 'yup';
 
 const createPopUp = ref(false);
 const updatePopUp = ref(false);
-
-const nome = ref('');
-const senha = ref('');
-const confirmarSenha = ref('');
 const search = ref('');
-const cargo = ref('');
-
 
 const schema = yup.object({
-  email: yup.string().required().email(),
+  email: yup.string().required().email().max(255),
+  name: yup.string().required().max(150),
+  password: yup.string().required().min(6).max(255),
+  confirmPassword: yup.string().required().oneOf([yup.ref('password'), null], 'Senhas devem ser iguais'),
+  role: yup.string().required().oneOf(['Admin', 'Editor']),
 });
 
 const { values, errors, defineField } = useForm({
   validationSchema: schema,
 });
 
-const [email, emailAttrs] = defineField('email');
-
+const [email] = defineField('email');
+const [name] = defineField('name');
+const [password] = defineField('password');
+const [confirmPassword] = defineField('confirmPassword');
+const [role] = defineField('role');
 const onSubmit = () => {
   createPopUp.value = false;
 }
+
+console.log(role)
 </script>
 
 <template>
@@ -43,31 +46,30 @@ const onSubmit = () => {
 
         <v-card prepend-icon="mdi-account" title="CRIAR">
           <v-card-text>
-            <Form novalidate @submit.prevent="onSubmit">
+            <form novalidate @submit.prevent="onSubmit">
               <v-row dense>
                 <v-col cols="12" md="12" sm="6">
-                  <v-text-field label="Nome*" v-model="nome" required></v-text-field>
+                  <v-text-field label="Name*" :error-messages="errors.name" v-model="name" required></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12" sm="6">
-                  <v-text-field label="Email*" v-model="email" v-bind="emailAttrs" required></v-text-field>
-                </v-col>
-                <pre>errors: {{ errors }}</pre>
-
-                <v-col cols="12" md="6" sm="6">
-                  <v-text-field label="Senha*" v-model="senha" type="password" required></v-text-field>
+                  <v-text-field label="Email*" :error-messages="errors.email" v-model="email" required></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6" sm="6">
-                  <v-text-field label="Confirmar Senha*" v-model="confirmarSenha" type="password" required></v-text-field>
+                  <v-text-field label="Password*" :error-messages="errors.password" v-model="password" type="password" required></v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="6" sm="6">
+                  <v-text-field label="Confirm password*" :error-messages="errors.confirmPassword" v-model="confirmPassword" type="password" required></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12">
-                  <v-select :items="['Admin', 'Editor']" v-model="cargo" label="Cargo*" required></v-select>
+                  <v-select :items="['Admin', 'Editor']" v-model="role" :error-messages="errors.role" label="Role*" required></v-select>
                 </v-col>
               </v-row>
-              <small class="text-caption text-medium-emphasis">*indicates required field</small>
-            </Form>
+              <small class="text-caption text-medium-emphasis">* Indicador de campos obrígatorio</small>
+            </form>
           </v-card-text>
 
           <v-divider></v-divider>
@@ -92,9 +94,9 @@ const onSubmit = () => {
     <v-table class="w-100 border">
       <thead>
         <tr>
-          <th>Nome</th>
+          <th>name</th>
           <th>Email</th>
-          <th class="text-center">Cargo</th>
+          <th class="text-center">role</th>
           <th class="text-center">Ações</th>
         </tr>
       </thead>
@@ -122,7 +124,7 @@ const onSubmit = () => {
                 <v-card-text>
                   <v-row dense>
                     <v-col cols="12" md="12" sm="6">
-                      <v-text-field label="Nome*" required></v-text-field>
+                      <v-text-field label="name*" required></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="12" sm="6">
@@ -130,19 +132,19 @@ const onSubmit = () => {
                     </v-col>
 
                     <v-col cols="12" md="6" sm="6">
-                      <v-text-field label="Senha*" type="password" required></v-text-field>
+                      <v-text-field label="password*" type="password" required></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6" sm="6">
                       <v-text-field
-                        label="Confirmar Senha*"
+                        label="confirm password*"
                         type="password"
                         required
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="12">
-                      <v-select :items="['Admin', 'Editor']" label="Cargo*" required></v-select>
+                      <v-select :items="['Admin', 'Editor']" label="role*" required></v-select>
                     </v-col>
                   </v-row>
 
