@@ -6,14 +6,14 @@ const props = defineProps({
   action: String,
 })
 
-const { createPopUp, errors, email, name, password, confirmPassword, role, onSubmit } = useUserForm();
+const { errors, email, name, password, confirmPassword, role, onSubmit } = useUserForm();
 const formName = ref<string>('');
 const btnSize = ref<string>('');
 const btnColor = ref<string>('');
 if(props.action === 'create'){
   formName.value = 'CRIAR';
   btnSize.value = 'default';
-  btnColor.value = 'black';
+  btnColor.value = 'default';
 } else {
   formName.value = 'EDITAR';
   btnSize.value = 'small';

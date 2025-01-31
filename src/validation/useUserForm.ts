@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import * as yup from 'yup';
 
 export function useUserForm() {
-  const createPopUp = ref(false);
   const schema = yup.object({
     email: yup.string().required().email().max(255),
     name: yup.string().required().max(150),
@@ -24,8 +23,7 @@ export function useUserForm() {
 
   const onSubmit = handleSubmit((values) => {
     console.log('Usuário cadastrado:', values);
-    createPopUp.value = false;
   });
 
-  return { createPopUp, errors, email, name, password, confirmPassword, role, onSubmit };
+  return { errors, email, name, password, confirmPassword, role, onSubmit };
 }
