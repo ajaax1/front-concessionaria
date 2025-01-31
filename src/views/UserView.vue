@@ -1,84 +1,12 @@
 <script setup lang="ts">
-import { useForm } from 'vee-validate';
-import { ref } from 'vue'
-import * as yup from 'yup';
-
-const createPopUp = ref(false);
-const updatePopUp = ref(false);
-
-const nome = ref('');
-const senha = ref('');
-const confirmarSenha = ref('');
-const search = ref('');
-const cargo = ref('');
-
-
-const schema = yup.object({
-  email: yup.string().required().email(),
-});
-
-const { values, errors, defineField } = useForm({
-  validationSchema: schema,
-});
-
-const [email, emailAttrs] = defineField('email');
-
-const onSubmit = () => {
-  createPopUp.value = false;
-}
+import UserTable from '@/components/UserTable.vue'
+import UserForm from '@/components/UserForm.vue'
 </script>
 
 <template>
   <v-container>
     <div class="w-100 d-flex justify-space-between">
-      <v-dialog v-model="createPopUp" max-width="600">
-        <template v-slot:activator="{ props: activatorProps }">
-          <v-btn
-            class="text-none font-weight-regular"
-            text="CRIAR"
-            variant="outlined"
-            v-bind="activatorProps"
-          ></v-btn>
-        </template>
-
-        <v-card prepend-icon="mdi-account" title="CRIAR">
-          <v-card-text>
-            <Form novalidate @submit.prevent="onSubmit">
-              <v-row dense>
-                <v-col cols="12" md="12" sm="6">
-                  <v-text-field label="Nome*" v-model="nome" required></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="12" sm="6">
-                  <v-text-field label="Email*" v-model="email" v-bind="emailAttrs" required></v-text-field>
-                </v-col>
-                <pre>errors: {{ errors }}</pre>
-
-                <v-col cols="12" md="6" sm="6">
-                  <v-text-field label="Senha*" v-model="senha" type="password" required></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6" sm="6">
-                  <v-text-field label="Confirmar Senha*" v-model="confirmarSenha" type="password" required></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12">
-                  <v-select :items="['Admin', 'Editor']" v-model="cargo" label="Cargo*" required></v-select>
-                </v-col>
-              </v-row>
-              <small class="text-caption text-medium-emphasis">*indicates required field</small>
-            </Form>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text="Close" variant="plain" @click="createPopUp = false"></v-btn>
-            <v-btn color="primary" text="Save" variant="tonal" @click="onSubmit"></v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <UserForm action="create" />
       <v-text-field
         density="compact"
         max-width="200"
@@ -88,87 +16,6 @@ const onSubmit = () => {
         variant="outlined"
       ></v-text-field>
     </div>
-
-    <v-table class="w-100 border">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Email</th>
-          <th class="text-center">Cargo</th>
-          <th class="text-center">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Ruan</td>
-          <td>ruanhigor123@gmail.com</td>
-          <td class="text-center">
-            <v-chip variant="outlined"> Admin </v-chip>
-          </td>
-          <td class="text-center">
-            <v-dialog v-model="updatePopUp" max-width="600">
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                  class="mr-2"
-                  variant="outlined"
-                  size="small"
-                  color="#1B5E20"
-                  text="EDITAR"
-                  v-bind="activatorProps"
-                ></v-btn>
-              </template>
-
-              <v-card prepend-icon="mdi-account" title="EDITAR">
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12" md="12" sm="6">
-                      <v-text-field label="Nome*" required></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="12" sm="6">
-                      <v-text-field label="Email*" required></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" sm="6">
-                      <v-text-field label="Senha*" type="password" required></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" sm="6">
-                      <v-text-field
-                        label="Confirmar Senha*"
-                        type="password"
-                        required
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="12">
-                      <v-select :items="['Admin', 'Editor']" label="Cargo*" required></v-select>
-                    </v-col>
-                  </v-row>
-
-                  <small class="text-caption text-medium-emphasis">*indicates required field</small>
-                </v-card-text>
-
-                <v-divider></v-divider>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-
-                  <v-btn text="Close" variant="plain" @click="updatePopUp = false"></v-btn>
-
-                  <v-btn
-                    color="primary"
-                    text="Save"
-                    variant="tonal"
-                    @click="updatePopUp = false"
-                  ></v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <v-btn variant="outlined" size="small" color="red-accent-4" @click=""> DELETAR </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
+    <UserTable />
   </v-container>
 </template>

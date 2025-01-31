@@ -1,11 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useTheme } from 'vuetify'
+import { onMounted } from 'vue';
+import { useTheme } from 'vuetify';
 
-const theme = useTheme()
-function toggleTheme() {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
+const theme = useTheme();
+
+const toggleDarkMode = () => {
+  const isDark = theme.global.current.value.dark;
+  theme.global.name.value = isDark ? 'light' : 'dark';
+  localStorage.setItem("dark_theme", (!isDark).toString());
+};
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem("dark_theme");
+  if (savedTheme !== null) {
+    theme.global.name.value = savedTheme === "true" ? 'dark' : 'light';
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    theme.global.name.value = 'dark';
+    localStorage.setItem("dark_theme", "true");
+  }
+});
 const drawer = ref(true);
 </script>
 
@@ -16,8 +30,7 @@ const drawer = ref(true);
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
       <template v-slot:append>
-        <v-btn @click="toggleTheme" icon="mdi-theme-light-dark">
-        </v-btn>
+        <v-btn @click="toggleDarkMode" icon="mdi-theme-light-dark"> </v-btn>
       </template>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer">
@@ -25,7 +38,6 @@ const drawer = ref(true);
         <v-list-item to="/usuarios" :permanent="true" title="Usuarios"></v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-main>
       <RouterView />
     </v-main>
