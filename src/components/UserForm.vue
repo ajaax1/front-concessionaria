@@ -2,6 +2,7 @@
 import { useUserForm } from '@/validation/useUserForm.ts';
 import { ref } from 'vue';
 
+
 const props = defineProps({
   action: String,
 })
@@ -10,6 +11,8 @@ const { errors, email, name, password, confirmPassword, role, onSubmit } = useUs
 const formName = ref<string>('');
 const btnSize = ref<string>('');
 const btnColor = ref<string>('');
+const createPopUp = ref<boolean>(false);
+
 if(props.action === 'create'){
   formName.value = 'CRIAR';
   btnSize.value = 'default';
