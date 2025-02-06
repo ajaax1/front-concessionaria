@@ -4,6 +4,7 @@ import { onMounted } from 'vue';
 import { useTheme } from 'vuetify';
 
 const theme = useTheme();
+const drawer = ref(true);
 
 const toggleDarkMode = () => {
   const isDark = theme.global.current.value.dark;
@@ -20,7 +21,7 @@ onMounted(() => {
     localStorage.setItem("dark_theme", "true");
   }
 });
-const drawer = ref(true);
+
 </script>
 
 <template>
