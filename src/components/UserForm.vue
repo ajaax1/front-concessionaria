@@ -1,17 +1,29 @@
 <script setup lang="ts">
 import { useUserForm } from '@/validation/useUserForm.ts'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   action: String,
 })
 
-const { errors, email, name, password, confirmPassword, role, onSubmit, loading } = useUserForm()
+const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack } =
+  useUserForm()
 
 const formName = ref<string>('')
 const btnSize = ref<string>('')
 const btnColor = ref<string>('')
 const createPopUp = ref<boolean>(false)
+const alertMessage = ref<string>('')
+const show1 = ref<boolean>(false);
+
+watch(feedBack, (value) => {
+  if (value === 'success') {
+    alertMessage.value = 'Usuário salvo com sucesso!'
+  } else if (value === 'error') {
+    alertMessage.value = 'Erro ao salvar usuário!'
+  }
+})
+
 
 if (props.action === 'create') {
   formName.value = 'CRIAR'
@@ -26,6 +38,13 @@ if (props.action === 'create') {
 
 <template>
   <v-dialog v-model="createPopUp" max-width="600">
+    <v-alert
+      v-if="feedBack"
+      class="mb-2"
+      :text="alertMessage"
+      :type="feedBack"
+      closable
+    ></v-alert>
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn
         class="text-none font-weight-regular"
@@ -62,8 +81,10 @@ if (props.action === 'create') {
                 label="Senha*"
                 :error-messages="errors.password"
                 v-model="password"
-                type="password"
                 required
+                :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append-inner="show1 = !show1"
+                :type="show1 ? 'text' : 'password'"
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -71,7 +92,8 @@ if (props.action === 'create') {
                 label="Confirmar Senha*"
                 :error-messages="errors.confirmPassword"
                 v-model="confirmPassword"
-                type="password"
+                @click:append-inner="show1 = !show1"
+                :type="show1 ? 'text' : 'password'"
                 required
               ></v-text-field>
             </v-col>

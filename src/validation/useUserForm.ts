@@ -1,10 +1,9 @@
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
-import axios from 'axios'
 import { ref } from 'vue'
+import userCreate from '../api/userCreate'
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-const loading = ref<boolean>(false) ;
+const loading = ref<boolean>(false)
 
 export function useUserForm() {
   const schema = yup.object({
@@ -18,7 +17,7 @@ export function useUserForm() {
     role: yup.string().required().oneOf(['Admin', 'Editor']),
   })
 
-  const { values, errors, defineField, handleSubmit } = useForm({
+  const { errors, defineField, handleSubmit, setErrors } = useForm({
     validationSchema: schema,
   })
 
@@ -27,22 +26,11 @@ export function useUserForm() {
   const [password] = defineField('password')
   const [confirmPassword] = defineField('confirmPassword')
   const [role] = defineField('role')
+  const feedBack = ref<string>('')
 
-
-  const onSubmit = handleSubmit( async (values)  => {
-    loading.value = true;
-    try {
-      const response = await axios({
-        method: 'post',
-        url: `${apiBaseUrl}/api/users`,
-        data: values,
-      });
-    } catch (error) {
-      if()
-    } finally {
-      loading.value = false;
-    }
+  const onSubmit = handleSubmit(async (values,{ resetForm }) => {
+    userCreate(setErrors, feedBack, loading, resetForm, values);
   })
 
-  return { errors, email, name, password, confirmPassword, role, onSubmit, loading }
+  return { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack }
 }
