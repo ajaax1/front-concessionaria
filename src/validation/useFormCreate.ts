@@ -1,11 +1,12 @@
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { ref } from 'vue'
-import userCreate from '../api/userCreate'
+import userCreate from '../api/userCreate.ts'
 
 const loading = ref<boolean>(false)
+const feedbackMessage = ref<string>('')
 
-export function useUserForm() {
+export function useFormCreate() {
   const schema = yup.object({
     email: yup.string().required().email().max(255),
     name: yup.string().required().max(150),
@@ -28,9 +29,20 @@ export function useUserForm() {
   const [role] = defineField('role')
   const feedBack = ref<string>('')
 
-  const onSubmit = handleSubmit(async (values,{ resetForm }) => {
-    userCreate(setErrors, feedBack, loading, resetForm, values);
+  const onSubmit = handleSubmit(async (values, { resetForm }) => {
+    await userCreate(setErrors, feedBack, loading, resetForm, values, feedbackMessage)
   })
 
-  return { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack }
+  return {
+    errors,
+    email,
+    name,
+    password,
+    confirmPassword,
+    role,
+    onSubmit,
+    loading,
+    feedBack,
+    feedbackMessage,
+  }
 }

@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import { useUserForm } from '@/validation/useUserForm.ts'
-import { ref, watch } from 'vue'
+import { useFormCreate } from '@/validation/useFormCreate.ts'
+import { ref } from 'vue'
+import { defineEmits, watch } from 'vue'
+
+const emit = defineEmits(['userUpdated'])
 
 const props = defineProps({
   action: String,
 })
 
-const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack } =
-  useUserForm()
+const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack, feedbackMessage } =
+  useFormCreate()
 
 const formName = ref<string>('')
 const btnSize = ref<string>('')
 const btnColor = ref<string>('')
 const createPopUp = ref<boolean>(false)
-const alertMessage = ref<string>('')
 const show1 = ref<boolean>(false);
 
-watch(feedBack, (value) => {
-  if (value === 'success') {
-    alertMessage.value = 'Usuário salvo com sucesso!'
-  } else if (value === 'error') {
-    alertMessage.value = 'Erro ao salvar usuário!'
+watch(() => feedBack, (newFeedBack) => {
+  console.log('a')
+  if (newFeedBack === 'success') {
+    emit('userUpdated')
+    createPopUp.value = false
   }
 })
-
 
 if (props.action === 'create') {
   formName.value = 'CRIAR'
@@ -41,7 +42,7 @@ if (props.action === 'create') {
     <v-alert
       v-if="feedBack"
       class="mb-2"
-      :text="alertMessage"
+      :text="feedbackMessage"
       :type="feedBack"
       closable
     ></v-alert>
