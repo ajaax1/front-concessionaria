@@ -2,77 +2,51 @@
 import UserForm from '@/components/UserForm.vue'
 import userAll from '@/api/userAll'
 import userDelete from '@/api/userDelete'
-import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-const response = ref([])
-const page = ref<number>(0)
+const response = ref()
+const page = ref<number>()
 const limit = ref<number>(0)
 const loading = ref<booalean>(false)
-const feedBack = ref<string>('')
+const feedback = ref<string>('')
 const users = ref<any>({})
-const route = useRoute()
 const router = useRouter()
-const paginationParameter = ref(route.query.page)
 const feedbackMessage = ref<string>('')
 
-onMounted(async () => {
-  if (!paginationParameter.value) {
-    paginationParameter.value = 1
-    router.push({ query: { page: 1 } })
+const refreshUsers = async (newPage) => {
+  if (newPage) {
+    page.value = newPage
   }
-  page.value = paginationParameter.value
-  response.value = await userAll(
-    loading,
-    page,
-    limit,
-    feedBack,
-    paginationParameter,
-    feedbackMessage,
-  )
-  if (!feedBack.value) {
+  response.value = await userAll(loading, page, limit, feedback, feedbackMessage)
+  router.push({ query: { page: page.value } })
+  if (!feedback.value) {
     users.value = response.value.data
-  }
-})
-
-
-
-const deleteUser = async (id: number) => {
-  response.value = await userDelete(loading, feedBack, feedbackMessage, id)
-  if (feedBack.value === 'success') {
-    response.value = await userAll(
-      loading,
-      page,
-      limit,
-      feedBack,
-      paginationParameter,
-      feedbackMessage,
-    )
-    if (feedBack.value === 'success') {
-      users.value = response.value.data
-    }
   }
 }
 
-const refreshUsers = async (page) => {
-  paginationParameter.value = page
-  response.value = await userAll(
-    loading,
-    page,
-    limit,
-    feedBack,
-    paginationParameter,
-    feedbackMessage,
-  )
-  if (!feedBack.value) {
-    users.value = response.value.data
+onMounted(async () => {
+  if (router.currentRoute.value.query.page) {
+    page.value = Number(router.currentRoute.value.query.page)
+  } else {
+    page.value = 1
+  }
+  refreshUsers(page.value)
+})
+
+const deleteUser = async (id: number) => {
+  response.value = await userDelete(loading, feedback, feedbackMessage, id)
+  if (feedback.value === 'success') {
+    if (users.value.length === 1 && page.value > 1) {
+      page.value = page.value - 1
+    }
+    await refreshUsers(page.value)
   }
 }
 </script>
 
 <template>
-  <v-alert v-if="feedBack" class="mb-2" :text="feedbackMessage" :type="feedBack" closable></v-alert>
+  <v-alert v-if="feedback" class="mb-2" :text="feedbackMessage" :type="feedback" closable></v-alert>
   <v-skeleton-loader
     v-if="loading"
     class="border rounded-0 mb-2"
@@ -95,7 +69,7 @@ const refreshUsers = async (page) => {
           <v-chip variant="outlined"> {{ user?.role }} </v-chip>
         </td>
         <td class="text-center">
-          <UserForm action="update" @userUpdated="refreshUsers" />
+          <UserForm action="update" @userUpdated="$emit('userUpdated')" />
           <v-btn
             @click="deleteUser(user?.id)"
             class="ml-2"
@@ -110,6 +84,11 @@ const refreshUsers = async (page) => {
     </tbody>
   </v-table>
   <div v-if="!loading" class="text-center mt-5">
-    <v-pagination @update:modelValue="refreshUsers(page)" v-model="page" :length="limit" :total-visible="1"></v-pagination>
+    <v-pagination
+      @update:modelValue="(newPage) => refreshUsers(newPage)"
+      v-model="page"
+      :length="limit"
+      :total-visible="1"
+    ></v-pagination>
   </div>
 </template>

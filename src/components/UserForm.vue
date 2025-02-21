@@ -9,7 +9,7 @@ const props = defineProps({
   action: String,
 })
 
-const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedBack, feedbackMessage } =
+const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedback, feedbackMessage } =
   useFormCreate()
 
 const formName = ref<string>('')
@@ -18,9 +18,8 @@ const btnColor = ref<string>('')
 const createPopUp = ref<boolean>(false)
 const show1 = ref<boolean>(false);
 
-watch(() => feedBack, (newFeedBack) => {
-  console.log('a')
-  if (newFeedBack === 'success') {
+watch(feedback, (newfeedback) => {
+  if (newfeedback === 'success') {
     emit('userUpdated')
     createPopUp.value = false
   }
@@ -40,10 +39,10 @@ if (props.action === 'create') {
 <template>
   <v-dialog v-model="createPopUp" max-width="600">
     <v-alert
-      v-if="feedBack"
+      v-if="feedback"
       class="mb-2"
       :text="feedbackMessage"
-      :type="feedBack"
+      :type="feedback"
       closable
     ></v-alert>
     <template v-slot:activator="{ props: activatorProps }">
@@ -100,7 +99,7 @@ if (props.action === 'create') {
             </v-col>
             <v-col cols="12">
               <v-select
-                :items="['Admin', 'Editor']"
+                :items="['admin', 'editor']"
                 v-model="role"
                 :error-messages="errors.role"
                 label="Cargo*"

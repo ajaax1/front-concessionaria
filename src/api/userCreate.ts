@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default async function useSubmit(
   setErrors,
-  feedBack,
+  feedback,
   loading,
   resetForm,
   values,
@@ -22,16 +22,16 @@ export default async function useSubmit(
     loading.value = false
     if (response?.status) {
       if (response.status === 201) {
-        feedBack.value = 'success'
+        feedback.value = 'success'
         feedbackMessage.value = 'Usuário criado com sucesso'
         resetForm()
 
       }else{
-        feedBack.value = 'error'
+        feedback.value = 'error'
         feedbackMessage.value = response.data.message
       }
     } else {
-      feedBack.value = 'error'
+      feedback.value = 'error'
       feedbackMessage.value = 'Erro ao criar usuário'
     }
   }

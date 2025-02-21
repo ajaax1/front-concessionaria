@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default async function userDelete(loading, feedBack, feedbackMessage, parameter) {
+export default async function userDelete(loading, feedback, feedbackMessage, parameter) {
   loading.value = true;
   let response
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -11,10 +11,10 @@ export default async function userDelete(loading, feedBack, feedbackMessage, par
   } finally {
     loading.value = false;
     if (response?.status) {
-      feedBack.value = 'success';
+      feedback.value = 'success';
       feedbackMessage.value = response.data.message
     } else {
-      feedBack.value = 'error';
+      feedback.value = 'error';
       feedbackMessage.value = 'Erro ao deletar usuário'
     }
   }

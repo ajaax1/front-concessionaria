@@ -4,15 +4,14 @@ export default async function userAll(
   loading,
   page,
   limit,
-  feedBack,
-  paginationParameter,
+  feedback,
   feedbackMessage,
 ) {
   loading.value = true
   let response
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
   try {
-    response = await axios.get(`${apiBaseUrl}/api/users/?page=${paginationParameter.value}`)
+    response = await axios.get(`${apiBaseUrl}/api/users/?page=${page.value}`)
   } catch (error) {
     console.log(error)
   } finally {
@@ -27,15 +26,15 @@ export default async function userAll(
           feedbackMessage.value === 'Usuário atualizado com sucesso'
         ) {
         } else {
-          feedBack.value = ''
+          feedback.value = ''
         }
         return response.data
       } else {
-        feedBack.value = 'error'
+        feedback.value = 'error'
         feedbackMessage.value = response.data.message
       }
     } else {
-      feedBack.value = 'error'
+      feedback.value = 'error'
       feedbackMessage.value = 'Erro ao buscar usuários'
     }
   }

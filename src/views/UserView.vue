@@ -6,7 +6,7 @@ import UserForm from '@/components/UserForm.vue'
 <template>
   <v-container>
     <div class="w-100 d-flex justify-space-between">
-      <UserForm action="create" />
+      <UserForm action="create"/>
       <v-text-field
         density="compact"
         max-width="200"

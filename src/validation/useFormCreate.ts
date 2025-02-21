@@ -15,7 +15,7 @@ export function useFormCreate() {
       .string()
       .required()
       .oneOf([yup.ref('password'), null], 'Senhas devem ser iguais'),
-    role: yup.string().required().oneOf(['Admin', 'Editor']),
+    role: yup.string().required().oneOf(['admin', 'editor']),
   })
 
   const { errors, defineField, handleSubmit, setErrors } = useForm({
@@ -27,10 +27,10 @@ export function useFormCreate() {
   const [password] = defineField('password')
   const [confirmPassword] = defineField('confirmPassword')
   const [role] = defineField('role')
-  const feedBack = ref<string>('')
+  const feedback = ref<string>('')
 
   const onSubmit = handleSubmit(async (values, { resetForm }) => {
-    await userCreate(setErrors, feedBack, loading, resetForm, values, feedbackMessage)
+    await userCreate(setErrors, feedback, loading, resetForm, values, feedbackMessage)
   })
 
   return {
@@ -42,7 +42,7 @@ export function useFormCreate() {
     role,
     onSubmit,
     loading,
-    feedBack,
+    feedback,
     feedbackMessage,
   }
 }
