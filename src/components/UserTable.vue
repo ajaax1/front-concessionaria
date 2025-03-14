@@ -20,9 +20,7 @@ const refreshUsers = async (newPage) => {
   }
   response.value = await userAll(loading, page, limit, feedback, feedbackMessage)
   router.push({ query: { page: page.value } })
-  if (!feedback.value) {
-    users.value = response.value.data
-  }
+  users.value = response.value.data
 }
 
 onMounted(async () => {
@@ -69,7 +67,7 @@ const deleteUser = async (id: number) => {
           <v-chip variant="outlined"> {{ user?.role }} </v-chip>
         </td>
         <td class="text-center">
-          <UserForm action="update" @userUpdated="$emit('userUpdated')" />
+          <UserForm action="update"/>
           <v-btn
             @click="deleteUser(user?.id)"
             class="ml-2"

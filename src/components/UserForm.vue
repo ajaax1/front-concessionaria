@@ -1,29 +1,32 @@
 <script setup lang="ts">
 import { useFormCreate } from '@/validation/useFormCreate.ts'
 import { ref } from 'vue'
-import { defineEmits, watch } from 'vue'
+import { defineEmits } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
+const page = route.params.page
 const emit = defineEmits(['userUpdated'])
-
 const props = defineProps({
   action: String,
 })
 
-const { errors, email, name, password, confirmPassword, role, onSubmit, loading, feedback, feedbackMessage } =
-  useFormCreate()
+const {
+  errors,
+  email,
+  name,
+  password,
+  confirmPassword,
+  role,
+  onSubmit,
+  loading
+} = useFormCreate()
 
 const formName = ref<string>('')
 const btnSize = ref<string>('')
 const btnColor = ref<string>('')
 const createPopUp = ref<boolean>(false)
-const show1 = ref<boolean>(false);
-
-watch(feedback, (newfeedback) => {
-  if (newfeedback === 'success') {
-    emit('userUpdated')
-    createPopUp.value = false
-  }
-})
+const show1 = ref<boolean>(false)
 
 if (props.action === 'create') {
   formName.value = 'CRIAR'
@@ -38,13 +41,6 @@ if (props.action === 'create') {
 
 <template>
   <v-dialog v-model="createPopUp" max-width="600">
-    <v-alert
-      v-if="feedback"
-      class="mb-2"
-      :text="feedbackMessage"
-      :type="feedback"
-      closable
-    ></v-alert>
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn
         class="text-none font-weight-regular"

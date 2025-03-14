@@ -30,6 +30,8 @@ export function useFormCreate() {
   const feedback = ref<string>('')
 
   const onSubmit = handleSubmit(async (values, { resetForm }) => {
+    feedback.value = ''
+    feedbackMessage.value = ''
     await userCreate(setErrors, feedback, loading, resetForm, values, feedbackMessage)
   })
 
