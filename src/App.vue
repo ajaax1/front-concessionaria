@@ -2,11 +2,7 @@
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useTheme } from 'vuetify';
-import {useToast} from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 
-const $toast = useToast();
-const instance = $toast.success('You did it!',{ position: 'top-right' });
 const theme = useTheme();
 const drawer = ref(true);
 

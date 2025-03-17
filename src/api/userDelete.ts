@@ -1,21 +1,20 @@
 import axios from 'axios'
+import { useToast } from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
-export default async function userDelete(loading, feedback, feedbackMessage, parameter) {
+const $toast = useToast()
+
+export default async function userDelete(loading, parameter) {
   loading.value = true;
   let response
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
   try {
     response = await axios.delete(`${apiBaseUrl}/api/users/${parameter}`)
+    $toast.success(response.data.message, { position: 'top-right' })
   } catch (error) {
-    console.log(error)
+    $toast.error('Erro ao deletar usuário', { position: 'top-right' })
   } finally {
     loading.value = false;
-    if (response?.status) {
-      feedback.value = 'success';
-      feedbackMessage.value = response.data.message
-    } else {
-      feedback.value = 'error';
-      feedbackMessage.value = 'Erro ao deletar usuário'
-    }
   }
+  return response;
 }

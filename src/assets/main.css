@@ -1,2 +1,5 @@
 @import './base.css';
 
+.v-toast{
+    z-index:100000!important;
+}

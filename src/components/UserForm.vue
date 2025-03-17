@@ -1,26 +1,16 @@
 <script setup lang="ts">
 import { useFormCreate } from '@/validation/useFormCreate.ts'
-import { ref } from 'vue'
-import { defineEmits } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, defineEmits } from 'vue'
+import userCreate from '../api/userCreate.ts'
 
-const route = useRoute()
-const page = route.params.page
-const emit = defineEmits(['userUpdated'])
 const props = defineProps({
   action: String,
 })
 
-const {
-  errors,
-  email,
-  name,
-  password,
-  confirmPassword,
-  role,
-  onSubmit,
-  loading
-} = useFormCreate()
+const emit = defineEmits(['refreshUsers'])
+const response = ref<any>(null);
+const { errors, email, name, password, confirmPassword, role, handleSubmit, setErrors, loading } = useFormCreate()
+const { errors, email, name, password, confirmPassword, role, handleSubmit, setErrors, loading } = useFormUpdate()
 
 const formName = ref<string>('')
 const btnSize = ref<string>('')
@@ -37,6 +27,13 @@ if (props.action === 'create') {
   btnSize.value = 'small'
   btnColor.value = 'green-darken-4'
 }
+
+const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  response.value = await userCreate(setErrors, loading, resetForm, values)
+  if (response.value.status === 201) {
+    emit('refreshUsers')
+  }
+})
 </script>
 
 <template>

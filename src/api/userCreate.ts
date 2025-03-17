@@ -1,38 +1,21 @@
 import axios from 'axios'
+import { useToast } from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
+const $toast = useToast()
 
-export default async function useSubmit(
-  setErrors,
-  feedback,
-  loading,
-  resetForm,
-  values,
-  feedbackMessage,
-) {
+export default async function useSubmit(setErrors, loading, resetForm, values) {
   loading.value = true
   let response
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
   try {
     response = await axios.post(`${apiBaseUrl}/api/users`, values)
+    $toast.success('Usuário criado com sucesso', { position: 'top-right' })
+    resetForm()
   } catch (error) {
-    if (error.response?.data?.errors) {
-      setErrors(error.response.data.errors)
-    }
+    $toast.error('Erro ao criar usuário',{ position: 'top-right' })
   } finally {
-    loading.value = false
-    if (response?.status) {
-      if (response.status === 201) {
-        feedback.value = 'success'
-        feedbackMessage.value = 'Usuário criado com sucesso'
-        resetForm()
-
-      }else{
-        feedback.value = 'error'
-        feedbackMessage.value = response.data.message
-      }
-    } else {
-      feedback.value = 'error'
-      feedbackMessage.value = 'Erro ao criar usuário'
-    }
+    loading.value = false;
   }
+  return response;
 }

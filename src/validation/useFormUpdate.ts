@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 const loading = ref<boolean>(false)
 
-export function useFormCreate() {
+export function useFormUpdate() {
   const schema = yup.object({
     email: yup.string().required().email().max(255),
     name: yup.string().required().max(150),
