@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import UserForm from '@/components/UserForm.vue'
+import UserCreateForm from '@/components/UserCreateForm.vue'
+import UserUpdateForm from '@/components/UserUpdateForm.vue'
 import userAll from '@/api/userAll'
 import userDelete from '@/api/userDelete'
 import { ref, onMounted } from 'vue'
@@ -44,7 +45,7 @@ const deleteUser = async (id: number) => {
 <template>
   <v-container>
     <div class="w-100 d-flex justify-space-between">
-      <UserForm action="create" @refreshUsers="refreshUsers" />
+      <UserCreateForm @refreshUsers="refreshUsers" />
       <v-text-field
         density="compact"
         max-width="200"
@@ -76,7 +77,7 @@ const deleteUser = async (id: number) => {
             <v-chip variant="outlined"> {{ user?.role }} </v-chip>
           </td>
           <td class="text-center">
-            <UserForm action="update" />
+            <UserUpdateForm action="update" />
             <v-btn
               @click="deleteUser(user?.id)"
               class="ml-2"

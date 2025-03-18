@@ -3,37 +3,20 @@ import { useFormCreate } from '@/validation/useFormCreate.ts'
 import { ref, defineEmits } from 'vue'
 import userCreate from '../api/userCreate.ts'
 
-const props = defineProps({
-  action: String,
-})
-
 const emit = defineEmits(['refreshUsers'])
 const response = ref<any>(null);
 const { errors, email, name, password, confirmPassword, role, handleSubmit, setErrors, loading } = useFormCreate()
-const { errors, email, name, password, confirmPassword, role, handleSubmit, setErrors, loading } = useFormUpdate()
 
-const formName = ref<string>('')
-const btnSize = ref<string>('')
-const btnColor = ref<string>('')
 const createPopUp = ref<boolean>(false)
 const show1 = ref<boolean>(false)
-
-if (props.action === 'create') {
-  formName.value = 'CRIAR'
-  btnSize.value = 'default'
-  btnColor.value = 'default'
-} else {
-  formName.value = 'EDITAR'
-  btnSize.value = 'small'
-  btnColor.value = 'green-darken-4'
-}
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   response.value = await userCreate(setErrors, loading, resetForm, values)
   if (response.value.status === 201) {
     emit('refreshUsers')
   }
-})
+  })
+
 </script>
 
 <template>
@@ -41,15 +24,15 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn
         class="text-none font-weight-regular"
-        :color="btnColor"
-        :size="btnSize"
-        :text="formName"
+        color="default"
+        size="default"
+        text="CRIAR"
         variant="outlined"
         v-bind="activatorProps"
       ></v-btn>
     </template>
 
-    <v-card prepend-icon="mdi-account" :title="formName">
+    <v-card prepend-icon="mdi-account" title="CRIAR">
       <v-card-text>
         <form novalidate @submit.prevent="onSubmit">
           <v-row dense>
