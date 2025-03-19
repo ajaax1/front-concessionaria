@@ -77,7 +77,12 @@ const deleteUser = async (id: number) => {
             <v-chip variant="outlined"> {{ user?.role }} </v-chip>
           </td>
           <td class="text-center">
-            <UserUpdateForm :id="user?.id" @refreshUsers="refreshUsers" />
+            <UserUpdateForm :user="{
+              id:user.id,
+              name:user.name,
+              email:user.email,
+              role:user.role
+            }" @refreshUsers="refreshUsers" />
             <v-btn
               @click="deleteUser(user?.id)"
               class="ml-2"
