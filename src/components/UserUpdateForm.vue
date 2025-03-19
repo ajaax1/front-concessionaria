@@ -3,6 +3,7 @@ import { useFormUpdate } from '@/validation/useFormUpdate.ts'
 import { ref, defineEmits } from 'vue'
 import userUpdate from '../api/userUpdate.ts'
 
+const props = defineProps(['id'])
 const emit = defineEmits(['refreshUsers'])
 const response = ref<any>(null);
 const { errors, email, name, password, confirmPassword, role, handleSubmit, setErrors, loading } = useFormUpdate()
@@ -11,7 +12,7 @@ const updatePopUp = ref<boolean>(false)
 const show1 = ref<boolean>(false)
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-  response.value = await userUpdate(setErrors, loading, resetForm, values)
+  response.value = await userUpdate(setErrors, loading, resetForm, values, props.id)
   if (response.value.status === 201) {
     emit('refreshUsers')
   }
